@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#F4F1EA">
+<title>Forest — Demo</title>
+<style>
+:root{--bg:#ebe8e1;--app:#f7f4ee;--card:#fffdf9;--ink:#22231f;--muted:#77796f;--line:rgba(40,42,36,.09);--green:#456b4f;--soft:#edf3ea;--shadow:0 14px 36px rgba(45,42,36,.08)}
+*{box-sizing:border-box}html,body{margin:0;height:100%;background:var(--bg);color:var(--ink)}body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang SC","Segoe UI",sans-serif;-webkit-font-smoothing:antialiased;overflow:hidden}
+button,textarea{font:inherit}button{cursor:pointer;-webkit-tap-highlight-color:transparent}.stage{height:100dvh;display:grid;place-items:center;padding:24px;background:radial-gradient(circle at 50% 0,#fff8,transparent 38%),var(--bg)}
+.app{position:relative;width:min(430px,100vw);height:min(844px,calc(100dvh - 48px));min-height:620px;background:var(--app);border:1px solid #fff9;border-radius:34px;overflow:hidden;box-shadow:0 30px 80px #2b29231c}
+.status{height:34px;padding:13px 20px 0;display:flex;justify-content:space-between;font-size:11px;font-weight:650}.view{position:absolute;inset:34px 0 0;display:none}.view.active{display:block}.scroll{height:100%;overflow:auto;padding:22px 20px 116px;scrollbar-width:none}.scroll::-webkit-scrollbar{display:none}
+.eyebrow{font-size:12px;color:var(--muted);margin-bottom:5px}.h1{font-size:31px;line-height:1.06;font-weight:740;letter-spacing:-.04em}.sub{margin-top:7px;font-size:14px;color:var(--muted);line-height:1.45}
+.focus{margin-top:18px;padding:20px;border-radius:27px;background:linear-gradient(150deg,#fffdfa,#eef4eb);border:1px solid #456b4f1a;box-shadow:var(--shadow)}.focus-label{font-size:12px;font-weight:700;color:var(--green)}.focus-body{display:grid;grid-template-columns:1fr 78px;gap:14px;align-items:center;margin-top:12px}.focus-title{font-size:27px;line-height:1.14;font-weight:730;letter-spacing:-.035em}.source{font-size:12px;color:var(--muted);margin-top:8px}
+.tree{position:relative;width:70px;height:76px;margin:auto}.pot{position:absolute;left:17px;bottom:3px;width:38px;height:22px;background:linear-gradient(#eee6da,#d9cebe);border-radius:7px 7px 15px 15px;box-shadow:0 7px 15px #534c401c}.stem{position:absolute;left:34px;bottom:23px;width:5px;height:28px;border-radius:9px;background:#795f3d}.leaf{position:absolute;width:25px;height:16px;border-radius:100% 10% 100% 10%;background:linear-gradient(145deg,#7fa76f,#4f8054);transform-origin:100% 100%}.l1{left:11px;top:20px;transform:rotate(35deg)}.l2{left:35px;top:12px;transform:scaleX(-1) rotate(28deg)}.tree.grown .leaf{width:29px;height:19px}.tree.grown .l3{display:block}.l3{display:none;left:22px;top:5px;transform:rotate(58deg)}
+.btn{border:0;border-radius:16px;min-height:50px;padding:0 18px;font-weight:680}.primary{background:var(--green);color:#fff;box-shadow:0 8px 18px #456b4f2a}.secondary{background:#efede7;color:var(--ink)}.wide{width:100%}.focus .btn{margin-top:17px}
+.section{margin:27px 2px 8px;font-size:13px;font-weight:650;color:var(--muted)}.tasks{display:grid}.task{min-height:56px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:13px;font-size:15px;color:#4e5049}.circle{width:22px;height:22px;border:1.5px solid #b3b4ad;border-radius:50%;background:transparent;flex:0 0 auto}
+.capture{margin-top:18px;width:100%;height:54px;border:1px solid var(--line);border-radius:17px;background:#fffdf9c9;padding:0 16px;display:flex;align-items:center;justify-content:space-between;color:var(--muted)}.hint{font-size:11px;color:#a2a39b}
+.nav{position:absolute;z-index:15;left:12px;right:12px;bottom:max(10px,env(safe-area-inset-bottom));height:68px;padding:7px;display:grid;grid-template-columns:repeat(3,1fr);gap:5px;border:1px solid var(--line);border-radius:23px;background:#fcfaf6ed;backdrop-filter:blur(18px);box-shadow:0 10px 30px #2b292312}.nav button{border:0;border-radius:17px;background:transparent;color:var(--muted);font-size:12px;font-weight:650}.nav button.active{background:var(--soft);color:var(--green)}
+.list{margin-top:18px;display:grid;gap:9px}.row{width:100%;border:1px solid var(--line);border-radius:19px;background:#fffdf9dd;padding:15px;text-align:left}.row-title{font-size:15px;font-weight:620;line-height:1.4}.meta{font-size:12px;color:var(--muted);margin-top:5px}.tree-row{display:grid;grid-template-columns:56px 1fr auto;align-items:center;gap:10px;padding:11px 13px}.tree-row .tree{transform:scale(.6);margin:-12px;width:76px}.arrow{color:#999}
+.topbar{height:48px;display:flex;align-items:center;gap:10px}.back{width:42px;height:42px;border:0;border-radius:14px;background:#efede7;font-size:21px}.toplabel{font-size:14px;color:var(--muted);font-weight:650}.goal{text-align:center;padding:6px 10px 14px}.goal .tree{transform:scale(1.15);margin:8px auto 18px}.goal-title{font-size:28px;line-height:1.1;font-weight:740;letter-spacing:-.035em}.why{margin:9px auto 0;max-width:300px;color:var(--muted);font-size:14px;line-height:1.45}
+.kv,.next,.rec{margin-top:12px;border-radius:20px;padding:16px;border:1px solid var(--line);background:#fffdf9d9}.label{font-size:12px;color:var(--muted);font-weight:650}.value{margin-top:6px;font-size:15px}.next,.rec{background:var(--soft);border-color:#456b4f1a}.next .label,.rec .label{color:var(--green)}.next-title,.rec-title{font-size:21px;line-height:1.23;font-weight:710;letter-spacing:-.025em;margin-top:7px}.next .btn{margin-top:15px}
+.path{margin-top:18px;border-top:1px solid var(--line)}.path-row{display:grid;grid-template-columns:27px 1fr;gap:10px;padding:13px 0;border-bottom:1px solid var(--line)}.num{width:25px;height:25px;border-radius:8px;background:#efede7;display:grid;place-items:center;font-size:12px;color:var(--muted);font-weight:700}.path-name{font-size:15px;font-weight:680}.path-desc{font-size:12px;color:var(--muted);margin-top:3px;line-height:1.4}.actions{display:grid;gap:8px;margin-top:16px}.twocol{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.overlay{position:absolute;inset:0;z-index:30;background:#16171233;backdrop-filter:blur(2px);opacity:0;pointer-events:none;transition:.2s}.overlay.open{opacity:1;pointer-events:auto}.sheet{position:absolute;z-index:31;left:8px;right:8px;bottom:8px;background:#fbfaf6;border:1px solid #fff;border-radius:29px;padding:9px 14px max(16px,env(safe-area-inset-bottom));box-shadow:0 25px 70px #22231f38;transform:translateY(calc(100% + 20px));transition:.3s cubic-bezier(.22,.72,.2,1)}.sheet.open{transform:translateY(0)}.grab{width:38px;height:5px;border-radius:99px;background:#d8d5ce;margin:2px auto 14px}.sheet-title{font-size:19px;font-weight:720}
+.inputwrap{margin-top:14px;border:1px solid var(--line);background:var(--card);border-radius:20px;padding:9px 9px 9px 14px;display:grid;grid-template-columns:1fr 48px;gap:8px;align-items:end}.input{border:0;outline:0;resize:none;background:transparent;min-height:74px;padding:8px 0;font-size:17px;line-height:1.45}.send{width:46px;height:46px;border:0;border-radius:15px;background:var(--green);color:#fff;font-size:20px}.quote{margin-top:13px;padding:14px;border-radius:16px;background:#efede7;font-size:15px;line-height:1.45}.suggest{margin-top:12px;padding:15px;border-radius:18px;background:var(--soft);border:1px solid #456b4f1a}.suggest strong{font-size:18px;line-height:1.3}.suggest p{margin:6px 0 0;color:var(--muted);font-size:13px;line-height:1.45}.choices{display:grid;gap:8px;margin-top:12px}.choice{min-height:50px;border:1px solid var(--line);border-radius:16px;background:var(--card);padding:0 15px;text-align:left;font-weight:650}.choice.hot{background:var(--soft);color:var(--green)}
+.toast{position:absolute;z-index:40;left:50%;bottom:94px;transform:translate(-50%,16px);background:#252620;color:#fff;padding:10px 14px;border-radius:14px;font-size:13px;opacity:0;pointer-events:none;transition:.2s}.toast.show{opacity:1;transform:translate(-50%,0)}
+@media(max-width:520px){.stage{padding:0}.app{width:100vw;height:100dvh;border:0;border-radius:0;box-shadow:none}.status{padding-top:max(13px,env(safe-area-inset-top))}}
+</style>
+</head>
+<body>
+<div class="stage">
+<div class="app">
+<div class="status"><span>9:41</span><span>● ●</span></div>
+
+<section id="today" class="view active"><div class="scroll">
+<div class="eyebrow">9月14日 周一</div><div class="h1">今天</div>
+<div id="focusCard" class="focus">
+<div class="focus-label">今天最重要的事</div>
+<div class="focus-body"><div><div id="focusTitle" class="focus-title">写下 v1 必须具备的 3 个核心功能</div><div class="source">来自：发布我的第一个 Mac 应用</div></div>
+<div id="focusTree" class="tree"><i class="stem"></i><i class="leaf l1"></i><i class="leaf l2"></i><i class="leaf l3"></i><i class="pot"></i></div></div>
+<button id="focusAction" class="btn primary wide">开始</button>
+</div>
+<div class="section">其他待办</div>
+<div class="tasks"><div class="task"><span class="circle"></span>回复 Alex</div><div class="task"><span class="circle"></span>提交报销单</div><div class="task"><span class="circle"></span>买咖啡豆</div></div>
+<button class="capture openCapture"><span>随时记录一个想法…</span><span class="hint">⌘ K</span></button>
+</div></section>
+
+<section id="inbox" class="view"><div class="scroll">
+<div class="h1">收件箱</div><div class="sub">这里只放还没想清楚的东西。</div>
+<div id="inboxList" class="list">
+<button class="row clarify"><div class="row-title">这个月发布我的第一个 Mac 应用</div><div class="meta">刚刚</div></button>
+<button class="row"><div class="row-title">明天给 Alex 发邮件</div><div class="meta">2 小时前</div></button>
+<button class="row"><div class="row-title">也许重新设计作品集</div><div class="meta">3 小时前</div></button>
+</div>
+<button class="capture openCapture"><span>记录一个想法…</span><span class="hint">⌘ K</span></button>
+</div></section>
+
+<section id="trees" class="view"><div class="scroll">
+<div class="h1">目标</div><div class="sub">只留下真正想养大的几件事。</div>
+<div class="list">
+<button class="row tree-row openMac"><div class="tree"><i class="stem"></i><i class="leaf l1"></i><i class="leaf l2"></i><i class="leaf l3"></i><i class="pot"></i></div><div><div class="row-title">发布我的第一个 Mac 应用</div><div class="meta">当前：定义 MVP</div></div><span class="arrow">›</span></button>
+<button class="row tree-row"><div class="tree"><i class="stem"></i><i class="leaf l1"></i><i class="leaf l2"></i><i class="pot"></i></div><div><div class="row-title">上线新版作品集</div><div class="meta">当前：选择作品</div></div><span class="arrow">›</span></button>
+</div></div></section>
+
+<section id="plan" class="view"><div class="scroll" style="padding-bottom:30px">
+<div class="topbar"><button class="back goInbox">‹</button><span class="toplabel">规划</span></div>
+<div class="label">建议路径</div><div class="goal-title" style="text-align:left;margin-top:6px">发布我的第一个 Mac 应用</div>
+<div class="path"><div class="path-row"><div class="num">1</div><div><div class="path-name">定义</div><div class="path-desc">明确用户、问题和 MVP。</div></div></div><div class="path-row"><div class="num">2</div><div><div class="path-name">开发</div><div class="path-desc">完成最小可用版本。</div></div></div><div class="path-row"><div class="num">3</div><div><div class="path-name">验证</div><div class="path-desc">让少量真实用户试用。</div></div></div><div class="path-row"><div class="num">4</div><div><div class="path-name">打磨</div><div class="path-desc">改善关键体验。</div></div></div><div class="path-row"><div class="num">5</div><div><div class="path-name">发布</div><div class="path-desc">准备分发并上线。</div></div></div></div>
+<div class="rec"><div class="label">建议的下一步</div><div class="rec-title">写下 v1 必须具备的 3 个核心功能</div></div>
+<div class="actions"><button id="acceptPlan" class="btn primary wide">采用这个计划</button><div class="twocol"><button id="simplify" class="btn secondary">再简单一点</button><button id="breakDown" class="btn secondary">拆得更细</button></div></div>
+</div></section>
+
+<section id="treeDetail" class="view"><div class="scroll" style="padding-bottom:34px">
+<div class="topbar"><button class="back goTrees">‹</button><span class="toplabel">目标</span></div>
+<div class="goal"><div id="detailTree" class="tree"><i class="stem"></i><i class="leaf l1"></i><i class="leaf l2"></i><i class="leaf l3"></i><i class="pot"></i></div><div class="goal-title">发布我的第一个 Mac 应用</div><div class="why">做出并发布一个真正有用的独立产品。</div></div>
+<div class="kv"><div class="label">当前阶段</div><div class="value">定义 MVP</div></div>
+<div class="next"><div class="label">下一步行动</div><div class="next-title">写下 v1 必须具备的 3 个核心功能</div><button class="btn primary wide goToday">继续</button></div>
+<div class="section">路径</div>
+<div class="path"><div class="path-row"><div class="num">•</div><div class="path-name">定义 MVP</div></div><div class="path-row"><div class="num">•</div><div class="path-name">开发</div></div><div class="path-row"><div class="num">•</div><div class="path-name">测试</div></div><div class="path-row"><div class="num">•</div><div class="path-name">打磨</div></div><div class="path-row"><div class="num">•</div><div class="path-name">发布</div></div></div>
+</div></section>
+
+<nav class="nav"><button data-view="today" class="active">今天</button><button data-view="inbox">收件箱</button><button data-view="trees">目标</button></nav>
+<div id="overlay" class="overlay"></div><div id="sheet" class="sheet"></div><div id="toast" class="toast"></div>
+</div>
+</div>
+<script>
+(function(){
+var current='today',planAccepted=false,started=false,done=false;
+var views=[].slice.call(document.querySelectorAll('.view'));
+var nav=[].slice.call(document.querySelectorAll('.nav button'));
+var overlay=document.getElementById('overlay'),sheet=document.getElementById('sheet'),toast=document.getElementById('toast');
+
+function show(id){
+ current=id; views.forEach(function(v){v.classList.toggle('active',v.id===id)});
+ nav.forEach(function(b){b.classList.toggle('active',b.getAttribute('data-view')===id)});
+ document.querySelector('.nav').style.display=(id==='plan'||id==='treeDetail')?'none':'grid';
+}
+nav.forEach(function(b){b.onclick=function(){show(b.getAttribute('data-view'))}});
+document.querySelectorAll('.goInbox').forEach(function(b){b.onclick=function(){show('inbox')}});
+document.querySelectorAll('.goTrees').forEach(function(b){b.onclick=function(){show('trees')}});
+document.querySelectorAll('.goToday').forEach(function(b){b.onclick=function(){show('today')}});
+document.querySelectorAll('.openMac').forEach(function(b){b.onclick=function(){show('treeDetail')}});
+
+function openSheet(html){
+ sheet.innerHTML='<div class="grab"></div>'+html;overlay.classList.add('open');sheet.classList.add('open');
+}
+function closeSheet(){overlay.classList.remove('open');sheet.classList.remove('open')}
+overlay.onclick=closeSheet;
+
+function capture(){
+ openSheet('<div class="sheet-title">记下你的想法</div><div class="inputwrap"><textarea id="captureInput" class="input" rows="2" placeholder="记录任何想法…"></textarea><button id="send" class="send">↑</button></div>');
+ var input=document.getElementById('captureInput');input.focus();
+ document.getElementById('send').onclick=function(){
+  var t=input.value.trim();if(!t)return;
+  var row=document.createElement('button');row.className='row clarify';row.innerHTML='<div class="row-title">'+escapeHtml(t)+'</div><div class="meta">刚刚</div>';
+  document.getElementById('inboxList').insertBefore(row,document.getElementById('inboxList').firstChild);bindClarify(row);closeSheet();flash('已放进收件箱');
+ };
+}
+document.querySelectorAll('.openCapture').forEach(function(b){b.onclick=capture});
+
+function bindClarify(el){el.onclick=function(){
+ var text=el.querySelector('.row-title').textContent;
+ openSheet('<div class="sheet-title">这是什么？</div><div class="quote">'+escapeHtml(text)+'</div><div class="suggest"><strong>这看起来不只是一个任务。</strong><p>它有明确结果，也需要多个行动。可以把它变成一个目标。</p></div><div class="choices"><button id="toTree" class="choice hot">目标</button><button class="choice">任务</button><button class="choice">以后再说</button></div>');
+ document.getElementById('toTree').onclick=function(){el.remove();closeSheet();show('plan')};
+};}
+document.querySelectorAll('.clarify').forEach(bindClarify);
+
+document.getElementById('acceptPlan').onclick=function(){planAccepted=true;started=false;done=false;show('today');flash('已设为今天最重要的事')};
+document.getElementById('simplify').onclick=function(){flash('路径已保持在最少必要步骤')};
+document.getElementById('breakDown').onclick=function(){flash('下一步已经足够具体')};
+
+document.getElementById('focusAction').onclick=function(){
+ var btn=this;
+ if(!planAccepted){started=true;btn.textContent='完成';flash('只做这一件事');return}
+ if(!started){started=true;btn.textContent='完成';return}
+ if(!done){done=true;btn.textContent='已完成';btn.disabled=true;document.getElementById('focusTree').classList.add('grown');document.getElementById('detailTree').classList.add('grown');flash('目标向前了一点')}
+};
+
+function flash(text){toast.textContent=text;toast.classList.add('show');clearTimeout(flash.t);flash.t=setTimeout(function(){toast.classList.remove('show')},1500)}
+function escapeHtml(s){return s.replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]})}
+document.addEventListener('keydown',function(e){if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='k'){e.preventDefault();capture()}if(e.key==='Escape')closeSheet()});
+})();
+</script>
+</body>
+</html>
